@@ -1,0 +1,82 @@
+{
+    "entities": {
+        "company": {
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "rules": {
+                        "notBlank": null,
+                        "maxLength": {
+                            "length": 100
+                        },
+                        "unique": {
+                            "errorMessage": "{value} already exists."
+                        }
+                    }
+                }
+            },
+            "children": {
+                "employees": {
+                    "entity": "employee",
+                    "parent": "company"
+                }
+            },
+            "rules": {},
+            "views": {}
+        },
+        "employee": {
+            "properties": {
+                "firstName": {
+                    "type": "string",
+                    "rules": {
+                        "notBlank": null
+                    }
+                },
+                "lastName": {
+                    "type": "string",
+                    "rules": {
+                        "notBlank": null
+                    }
+                }
+            },
+            "parents": {
+                "company": {
+                    "entity": "company"
+                }
+            },
+            "views": {}
+        }
+    },
+    "rules": {
+        "maxLength": {
+            "description": "Must be shorter than {length} characters.",
+            "errorMessage": "Must be shorter than {length} characters.",
+            "params": {
+                "length": "number"
+            },
+            "test": "function(value, params) { return value.toString().length <= params.length }",
+            "testNull": false,
+            "types": ["string"]
+        },
+        "notBlank": {
+            "description": "Must not be blank",
+            "errorMessage": "Must not be blank",
+            "test": "function(value) { return value && value != '' }",
+            "testNull": true,
+            "types": ["string"]
+        },
+        "unique": {
+            "description": "Must not have the same {propertyName} as any other {entityName}.",
+            "errorMessage": "{value} has already been used.",
+            "scope": {
+                "values": "function(world, entityType) { world[entityType] }"
+            },
+            "test": "function(value, params, scope) { return !scope.values.includes(value) }",
+            "testNull": true,
+            "types": ["string", "number", "boolean"]
+        }        
+    },
+    "routes": {
+        "people": {}
+    }
+}
